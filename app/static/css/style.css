@@ -158,3 +158,30 @@ footer {
     background: #d1ecf1;
     color: #0c5460;
 }
+
+/* OID List */
+.oid-list {
+    list-style: none;
+    padding: 0;
+    background: #f8f9fa;
+    padding: 1rem;
+    border-radius: 4px;
+    margin-top: 1.5rem;
+}
+
+.oid-list li {
+    padding: 0.25rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+.oid-list li:last-child {
+    border-bottom: none;
+}
+
+.oid-list code {
+    background: #343a40;
+    color: #fff;
+    padding: 0.125rem 0.375rem;
+    border-radius: 3px;
+    font-size: 0.875rem;
+}
