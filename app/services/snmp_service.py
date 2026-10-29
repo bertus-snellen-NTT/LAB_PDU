@@ -64,7 +64,12 @@ def snmpv3_get(host: str, oid: str, port: int = 161, save: bool = False) -> str:
         result = str(var_bind[1])
     
     if save:
-        query = SnmpQuery(host=host, oid=oid, result=result)
+        # Find or create the host
+        db_host = SnmpHost.query.filter_by(host=host).first()
+        if not db_host:
+            db_host = add_host(host, port)
+        
+        query = SnmpQuery(host_id=db_host.id, oid=oid, result=result)
         db.session.add(query)
         db.session.commit()
     
@@ -82,3 +87,61 @@ def get_saved_queries(limit: int = 100):
         List of SnmpQuery objects
     """
     return SnmpQuery.query.order_by(SnmpQuery.timestamp.desc()).limit(limit).all()
+
+
+def add_host(host: str, port: int = 161, description: str = None) -> SnmpHost:
+    """
+    Add a new SNMP host to the database.
+    
+    Args:
+        host: Hostname or IP address
+        port: SNMP port (default: 161)
+        description: Optional description
+    
+    Returns:
+        The created SnmpHost object
+    """
+    new_host = SnmpHost(host=host, port=port, description=description)
+    db.session.add(new_host)
+    db.session.commit()
+    return new_host
+
+
+def get_all_hosts() -> list:
+    """
+    Get all SNMP hosts from database.
+    
+    Returns:
+        List of SnmpHost objects
+    """
+    return SnmpHost.query.order_by(SnmpHost.host).all()
+
+
+def get_host_by_id(host_id: int) -> SnmpHost:
+    """
+    Get a specific SNMP host by ID.
+    
+    Args:
+        host_id: The host ID
+    
+    Returns:
+        SnmpHost object or None
+    """
+    return SnmpHost.query.get(host_id)
+
+
+def get_queries_by_host(host: str, limit: int = 100) -> list:
+    """
+    Get SNMP queries for a specific host.
+    
+    Args:
+        host: The hostname or IP address
+        limit: Maximum number of queries to return (default: 100)
+    
+    Returns:
+        List of SnmpQuery objects
+    """
+    db_host = SnmpHost.query.filter_by(host=host).first()
+    if db_host:
+        return SnmpQuery.query.filter_by(host_id=db_host.id).order_by(SnmpQuery.timestamp.desc()).limit(limit).all()
+    return []

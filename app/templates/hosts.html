@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+
+{% block title %}SNMP Hosts{% endblock %}
+
+{% block content %}
+<h1>SNMP Hosts</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="messages">
+      {% for category, message in messages %}
+        <div class="message {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<a href="{{ url_for('main.add_snmp_host') }}" class="button">Add New Host</a>
+
+{% if hosts %}
+  <table class="host-table">
+    <thead>
+      <tr>
+        <th>Host</th>
+        <th>Port</th>
+        <th>Description</th>
+        <th>Queries</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for host in hosts %}
+      <tr>
+        <td>{{ host.host }}</td>
+        <td>{{ host.port }}</td>
+        <td>{{ host.description or '-' }}</td>
+        <td>{{ host.queries|length }}</td>
+        <td><a href="{{ url_for('main.show_host_queries', host=host.host) }}" class="button small">View Queries</a></td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>No SNMP hosts added yet.</p>
+{% endif %}
+
+<a href="{{ url_for('main.index') }}" class="button">Back to Home</a>
+{% endblock %}

@@ -1,0 +1,32 @@
+{% extends "base.html" %}
+
+{% block title %}Queries for {{ host }}{% endblock %}
+
+{% block content %}
+<h1>Queries for {{ host }}</h1>
+
+{% if queries %}
+  <table class="query-table">
+    <thead>
+      <tr>
+        <th>OID</th>
+        <th>Result</th>
+        <th>Timestamp</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for query in queries %}
+      <tr>
+        <td>{{ query.oid }}</td>
+        <td>{{ query.result }}</td>
+        <td>{{ query.timestamp }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% else %}
+  <p>No queries found for this host.</p>
+{% endif %}
+
+<a href="{{ url_for('main.list_hosts') }}" class="button">Back to Hosts</a>
+{% endblock %}
