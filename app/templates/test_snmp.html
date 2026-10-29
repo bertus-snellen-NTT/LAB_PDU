@@ -27,13 +27,15 @@
   </div>
   
   <div class="form-group">
-    <label for="oid">OID*</label>
-    <select id="oid" name="oid" required>
-      <option value="">-- Select an OID --</option>
+    <label for="oid_template">OID Template (optional)</label>
+    <select id="oid_template" onchange="document.getElementById('oid').value = this.value">
+      <option value="">-- Select a template --</option>
       {% for name, oid in apc_oids.items() %}
       <option value="{{ oid }}">{{ name }} ({{ oid }})</option>
       {% endfor %}
     </select>
+    <input type="text" id="oid" name="oid" required placeholder="Enter OID or select template above">
+    <small class="hint">Select a template to populate, or enter any custom OID</small>
   </div>
   
   <div class="form-group">
