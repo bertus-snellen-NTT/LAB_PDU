@@ -2,7 +2,16 @@
 SNMP v3 service for executing SNMP queries.
 """
 import os
-from pysnmp.hlapi import *
+from pysnmp.hlapi import (
+    UsmUserData,
+    SnmpEngine,
+    CommunityData,
+    UdpTransportTarget,
+    ContextData,
+    ObjectType,
+    ObjectIdentity,
+    getCmd
+)
 from app.models import db
 from app.models.snmp_query import SnmpQuery
 from app.models.host import SnmpHost
