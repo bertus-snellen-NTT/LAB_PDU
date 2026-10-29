@@ -17,7 +17,8 @@ def about():
     return render_template('about.html', info=info)
 
 
-n@main.route('/rack/<rack_name>')
+
+@main.route('/rack/<rack_name>')
 
 def rack_detail(rack_name):
     """Show detailed view of a specific rack."""
