@@ -16,19 +16,24 @@
         <div class="rack-row">
             <div class="rack-row-label">Row 1</div>
             {% for i in range(1, 7) %}
-            <div class="rack" onclick="showRackDetail({{ i }})" {% if i <= 3 %}style="cursor: pointer;" title="Click to view rack {{ i }} front"{% endif %}>
+            <div class="rack" onclick="showRackDetail('R1C{{ i }}')" {% if i <= 3 %}style="cursor: pointer;" title="Click to view R1C{{ i }} front"{% endif %}>
                 <div class="rack-top">
-                    <span class="rack-label">Rack {{ i }}</span>
+                    <span class="rack-label">R1C{{ i }}</span>
                     {% if i <= 3 %}
                     <span class="rack-click-hint">&#9679;</span>
                     {% endif %}
                 </div>
                 <div class="rack-front" style="display: none;">
-                    <div class="rack-structure">
-                        {% for u in range(1, 43) %}
-                        <div class="rack-unit">U{{ u }}</div>
-                        {% endfor %}
+                    <div class="rack-frame">
+                        <div class="rack-side left"></div>
+                        <div class="rack-units">
+                            {% for u in range(1, 43) %}
+                            <div class="rack-unit"><span>U{{ u }}</span></div>
+                            {% endfor %}
+                        </div>
+                        <div class="rack-side right"></div>
                     </div>
+                    <div class="rack-base"></div>
                 </div>
             </div>
             {% endfor %}
@@ -37,20 +42,25 @@
         <!-- Row 2: 5 racks -->
         <div class="rack-row">
             <div class="rack-row-label">Row 2</div>
-            {% for i in range(7, 12) %}
-            <div class="rack" onclick="showRackDetail({{ i }})" {% if i <= 9 %}style="cursor: pointer;" title="Click to view rack {{ i }} front"{% endif %}>
+            {% for i in range(1, 6) %}
+            <div class="rack" onclick="showRackDetail('R2C{{ i }}')" {% if i <= 3 %}style="cursor: pointer;" title="Click to view R2C{{ i }} front"{% endif %}>
                 <div class="rack-top">
-                    <span class="rack-label">Rack {{ i }}</span>
-                    {% if i <= 9 %}
+                    <span class="rack-label">R2C{{ i }}</span>
+                    {% if i <= 3 %}
                     <span class="rack-click-hint">&#9679;</span>
                     {% endif %}
                 </div>
                 <div class="rack-front" style="display: none;">
-                    <div class="rack-structure">
-                        {% for u in range(1, 43) %}
-                        <div class="rack-unit">U{{ u }}</div>
-                        {% endfor %}
+                    <div class="rack-frame">
+                        <div class="rack-side left"></div>
+                        <div class="rack-units">
+                            {% for u in range(1, 43) %}
+                            <div class="rack-unit"><span>U{{ u }}</span></div>
+                            {% endfor %}
+                        </div>
+                        <div class="rack-side right"></div>
                     </div>
+                    <div class="rack-base"></div>
                 </div>
             </div>
             {% endfor %}
@@ -76,7 +86,7 @@ function setView(view) {
     const racks = document.querySelectorAll('.rack');
     if (view === 'top') {
         racks.forEach(rack => {
-            rack.querySelector('.rack-top').style.display = 'block';
+            rack.querySelector('.rack-top').style.display = 'flex';
             rack.querySelector('.rack-front').style.display = 'none';
         });
     } else {
@@ -87,23 +97,29 @@ function setView(view) {
     }
 }
 
-function showRackDetail(rackNumber) {
-    if (rackNumber > 3 && rackNumber <= 6) return;
-    if (rackNumber > 9 && rackNumber <= 11) return;
+function showRackDetail(rackName) {
+    // Only first 3 racks in each row are clickable
+    const clickableRacks = ['R1C1', 'R1C2', 'R1C3', 'R2C1', 'R2C2', 'R2C3'];
+    if (!clickableRacks.includes(rackName)) return;
     
     const modal = document.getElementById('rackDetailModal');
     const title = document.getElementById('rackDetailTitle');
     const content = document.getElementById('rackDetailContent');
     
-    title.textContent = `Rack ${rackNumber} - Front View`;
+    title.textContent = `${rackName} - Front View`;
     content.innerHTML = `
         <div class="rack-detail">
-            <div class="rack-structure-detail">
-                ${Array.from({length: 42}, (_, i) => `<div class="rack-unit-detail">U${i+1}</div>`).join('')}
+            <div class="rack-frame-detail">
+                <div class="rack-side-detail left"></div>
+                <div class="rack-units-detail">
+                    ${Array.from({length: 42}, (_, i) => `<div class="rack-unit-detail"><span>U${i+1}</span></div>`).join('')}
+                </div>
+                <div class="rack-side-detail right"></div>
             </div>
+            <div class="rack-base-detail"></div>
             <div class="rack-info">
-                <p><strong>Rack ${rackNumber}</strong></p>
-                <p>42U Standard Rack</p>
+                <p><strong>${rackName}</strong></p>
+                <p>42U Standard 19" Rack</p>
                 <p>Status: Operational</p>
             </div>
         </div>
