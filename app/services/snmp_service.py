@@ -2,7 +2,13 @@
 SNMP v3 service for executing SNMP queries.
 """
 import os
-from pysnmp.hlapi.v3arch import UsmUserData
+from pysnmp.hlapi.v3arch import (
+    UsmUserData,
+    usmHMACSHAAuthProtocol,
+    usmAesCfb128Protocol,
+    usmNoAuthProtocol,
+    usmNoPrivProtocol
+)
 from pysnmp.hlapi.asyncio import (
     SnmpEngine,
     CommunityData,
@@ -25,12 +31,25 @@ def get_snmpv3_engine():
     snmp_auth_protocol = os.getenv('SNMP_AUTH_PROTOCOL', 'usmHMACSHAAuthProtocol')
     snmp_priv_protocol = os.getenv('SNMP_PRIV_PROTOCOL', 'usmAesCfb128Protocol')
     
+    # Map string protocol names to actual protocol objects
+    auth_protocol_map = {
+        'usmHMACSHAAuthProtocol': usmHMACSHAAuthProtocol,
+        'usmNoAuthProtocol': usmNoAuthProtocol,
+    }
+    priv_protocol_map = {
+        'usmAesCfb128Protocol': usmAesCfb128Protocol,
+        'usmNoPrivProtocol': usmNoPrivProtocol,
+    }
+    
+    auth_protocol = auth_protocol_map.get(snmp_auth_protocol, usmHMACSHAAuthProtocol)
+    priv_protocol = priv_protocol_map.get(snmp_priv_protocol, usmAesCfb128Protocol)
+    
     return UsmUserData(
         userName=snmp_user,
         authKey=snmp_auth_key,
         privKey=snmp_priv_key,
-        authProtocol=eval(snmp_auth_protocol),
-        privProtocol=eval(snmp_priv_protocol)
+        authProtocol=auth_protocol,
+        privProtocol=priv_protocol
     )
 
 
