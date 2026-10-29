@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app.services.example_service import get_welcome_message, get_about_info
 from app.services.snmp_service import add_host, get_all_hosts, get_queries_by_host, snmpv3_get
-from app.services.device_service import add_device, get_valid_racks, get_devices_by_rack
+from app.services.device_service import add_device as add_device_service,  get_valid_racks, get_devices_by_rack
 
 main = Blueprint('main', __name__)
 
@@ -26,7 +26,7 @@ def rack_detail(rack_name):
 
 
 @main.route('/devices/add', methods=['GET', 'POST'])
-def add_device():
+def add_device_page():
     """Add a device to a rack."""
     valid_racks = get_valid_racks()
     
@@ -39,7 +39,7 @@ def add_device():
         description = request.form.get('description', '')
         
         try:
-            add_device(name, rack_id, rack_u, rack_u_height, image_url, description)
+            add_device_service(name, rack_id, rack_u, rack_u_height, image_url, description)
             flash(f'Device "{name}" added to {rack_id} at U{rack_u} (height: {rack_u_height}U)', 'success')
             return redirect(url_for('main.add_device'))
         except ValueError as e:
