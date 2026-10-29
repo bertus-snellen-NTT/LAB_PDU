@@ -8,7 +8,10 @@ A standard Flask web application.
 LAB_PDU/
 ├── app/
 │   ├── __init__.py          # App factory
-│   ├── routes.py            # Blueprints and routes
+│   ├── routes.py            # Blueprints and routes (thin controllers)
+│   ├── services/            # Business logic (separate functions)
+│   │   ├── __init__.py
+│   │   └── example_service.py
 │   ├── static/
 │   │   └── css/
 │   │       └── style.css    # Basic styling
