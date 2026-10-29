@@ -26,7 +26,7 @@ def rack_detail(rack_name):
 
 
 @main.route('/devices/add', methods=['GET', 'POST'])
-def add_device_page():
+def add_device():
     """Add a device to a rack."""
     valid_racks = get_valid_racks()
     

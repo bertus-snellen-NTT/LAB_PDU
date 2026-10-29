@@ -15,7 +15,7 @@
   {% endif %}
 {% endwith %}
 
-<form method="POST" action="{{ url_for('main.add_device') }}" class="form device-form" enctype="multipart/form-data">
+<form method="POST" action="{{ url_for('main.add_device')') }}" class="form device-form" enctype="multipart/form-data">
   <div class="form-group">
     <label for="name">Device Name*</label>
     <input type="text" id="name" name="name" required placeholder="e.g., Cisco Switch 2960">
