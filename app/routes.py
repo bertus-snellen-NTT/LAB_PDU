@@ -41,7 +41,7 @@ def add_device_route():
         try:
             add_device(name, rack_id, rack_u, rack_u_height, image_url, description)
             flash(f'Device "{name}" added to {rack_id} at U{rack_u} (height: {rack_u_height}U)', 'success')
-            return redirect(url_for('main.add_device_route'))
+            return redirect(url_for('main.add_device'))
         except ValueError as e:
             flash(f'Error: {str(e)}', 'error')
         except Exception as e:
