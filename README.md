@@ -82,6 +82,11 @@ The following environment variables are supported:
 | Variable | Description | Default |
 |----------|-------------|---------|
 | `SECRET_KEY` | Flask secret key for session security | dev-secret-key-change-in-production |
+| `SNMP_USER` | SNMP v3 username | - |
+| `SNMP_AUTH_KEY` | SNMP v3 authentication key | - |
+| `SNMP_PRIV_KEY` | SNMP v3 privacy key | - |
+| `SNMP_AUTH_PROTOCOL` | SNMP v3 auth protocol | usmHMACSHAAuthProtocol |
+| `SNMP_PRIV_PROTOCOL` | SNMP v3 privacy protocol | usmAesCfb128Protocol |
 
 ## Adding Sensitive Data
 
