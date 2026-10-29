@@ -53,10 +53,33 @@ def show_host_queries(host):
     return render_template('host_queries.html', host=host, queries=queries)
 
 
-@main.route('/query', methods=['GET', 'POST'])
-def run_query():
-    """Run an SNMP query on a configured host."""
+@main.route('/test-snmp', methods=['GET', 'POST'])
+def test_snmp():
+    """Test SNMP queries on configured hosts with common APC OIDs."""
     hosts = get_all_hosts()
+    
+    # Common APC PowerNet MIB OIDs
+    apc_oids = {
+        'System Description': '1.3.6.1.4.1.318.1.1.1.1.1.1.0',
+        'System Name': '1.3.6.1.4.1.318.1.1.1.1.2.1.0',
+        'System Contact': '1.3.6.1.4.1.318.1.1.1.1.3.1.0',
+        'System Location': '1.3.6.1.4.1.318.1.1.1.1.4.1.0',
+        'System Uptime': '1.3.6.1.2.1.1.3.0',
+        'Input Voltage': '1.3.6.1.4.1.318.1.1.8.2.3.1.0',
+        'Input Frequency': '1.3.6.1.4.1.318.1.1.8.2.4.1.0',
+        'Input Current': '1.3.6.1.4.1.318.1.1.8.2.5.1.0',
+        'Battery Status': '1.3.6.1.4.1.318.1.1.1.2.1.1.0',
+        'Battery Temperature': '1.3.6.1.4.1.318.1.1.1.2.2.1.0',
+        'Output Load': '1.3.6.1.4.1.318.1.1.4.2.2.1.0',
+        'Output Voltage': '1.3.6.1.4.1.318.1.1.4.2.3.1.0',
+        'Output Frequency': '1.3.6.1.4.1.318.1.1.4.2.4.1.0',
+        'Output Current': '1.3.6.1.4.1.318.1.1.4.2.5.1.0',
+        'Alarm Status': '1.3.6.1.4.1.318.1.1.1.1.5.1.0',
+        'Firmware Version': '1.3.6.1.4.1.318.1.1.1.1.6.1.0',
+        'Model Number': '1.3.6.1.4.1.318.1.1.1.1.7.1.0',
+        'Serial Number': '1.3.6.1.4.1.318.1.1.1.1.8.1.0',
+        'Manufacturer': '1.3.6.1.4.1.318.1.1.1.1.9.1.0',
+    }
     
     if request.method == 'POST':
         host_id = request.form.get('host_id')
@@ -65,7 +88,7 @@ def run_query():
         
         if not host_id or not oid:
             flash('Host and OID are required', 'error')
-            return redirect(url_for('main.run_query'))
+            return redirect(url_for('main.test_snmp'))
         
         # Get the host details
         selected_host = None
@@ -76,7 +99,7 @@ def run_query():
         
         if not selected_host:
             flash('Selected host not found', 'error')
-            return redirect(url_for('main.run_query'))
+            return redirect(url_for('main.test_snmp'))
         
         try:
             result = snmpv3_get(selected_host.host, oid, selected_host.port, save=save)
@@ -85,4 +108,4 @@ def run_query():
         except Exception as e:
             flash(f'Query failed: {str(e)}', 'error')
     
-    return render_template('run_query.html', hosts=hosts)
+    return render_template('test_snmp.html', hosts=hosts, apc_oids=apc_oids)
