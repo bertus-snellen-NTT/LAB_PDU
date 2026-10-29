@@ -5,9 +5,9 @@ import os
 from pysnmp.hlapi.v3arch import (
     UsmUserData,
     usmHMACSHAAuthProtocol,
-    usmAesCfb128Protocol,
     usmNoAuthProtocol,
     usmNoPrivProtocol,
+    usmDESPrivProtocol,
     ContextData,
     ObjectType,
     ObjectIdentity
@@ -24,7 +24,7 @@ def get_snmpv3_engine():
     snmp_auth_key = os.getenv('SNMP_AUTH_KEY')
     snmp_priv_key = os.getenv('SNMP_PRIV_KEY')
     snmp_auth_protocol = os.getenv('SNMP_AUTH_PROTOCOL', 'usmHMACSHAAuthProtocol')
-    snmp_priv_protocol = os.getenv('SNMP_PRIV_PROTOCOL', 'usmAesCfb128Protocol')
+    snmp_priv_protocol = os.getenv('SNMP_PRIV_PROTOCOL', 'usmDESPrivProtocol')
     
     # Map string protocol names to actual protocol objects
     auth_protocol_map = {
@@ -32,12 +32,12 @@ def get_snmpv3_engine():
         'usmNoAuthProtocol': usmNoAuthProtocol,
     }
     priv_protocol_map = {
-        'usmAesCfb128Protocol': usmAesCfb128Protocol,
+        'usmDESPrivProtocol': usmDESPrivProtocol,
         'usmNoPrivProtocol': usmNoPrivProtocol,
     }
     
     auth_protocol = auth_protocol_map.get(snmp_auth_protocol, usmHMACSHAAuthProtocol)
-    priv_protocol = priv_protocol_map.get(snmp_priv_protocol, usmAesCfb128Protocol)
+    priv_protocol = priv_protocol_map.get(snmp_priv_protocol, usmDESPrivProtocol)
     
     return UsmUserData(
         userName=snmp_user,
