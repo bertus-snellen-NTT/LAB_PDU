@@ -1,6 +1,7 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from app.services.example_service import get_welcome_message, get_about_info
 from app.services.snmp_service import add_host, get_all_hosts, get_queries_by_host, snmpv3_get
+from app.services.device_service import add_device, get_valid_racks, get_devices_by_rack
 
 main = Blueprint('main', __name__)
 
@@ -17,12 +18,38 @@ def about():
     return render_template('about.html', info=info)
 
 
-
 @main.route('/rack/<rack_name>')
-
 def rack_detail(rack_name):
     """Show detailed view of a specific rack."""
-    return render_template('rack_detail.html', rack_name=rack_name)
+    devices = get_devices_by_rack(rack_name)
+    return render_template('rack_detail.html', rack_name=rack_name, devices=devices)
+
+
+@main.route('/devices/add', methods=['GET', 'POST'])
+def add_device_route():
+    """Add a device to a rack."""
+    valid_racks = get_valid_racks()
+    
+    if request.method == 'POST':
+        name = request.form.get('name')
+        rack_id = request.form.get('rack_id')
+        rack_u = int(request.form.get('rack_u', 1))
+        rack_u_height = int(request.form.get('rack_u_height', 1))
+        image_url = request.form.get('image_url', '')
+        description = request.form.get('description', '')
+        
+        try:
+            add_device(name, rack_id, rack_u, rack_u_height, image_url, description)
+            flash(f'Device "{name}" added to {rack_id} at U{rack_u} (height: {rack_u_height}U)', 'success')
+            return redirect(url_for('main.add_device_route'))
+        except ValueError as e:
+            flash(f'Error: {str(e)}', 'error')
+        except Exception as e:
+            flash(f'Error adding device: {str(e)}', 'error')
+    
+    return render_template('add_device.html', valid_racks=valid_racks)
+
+
 @main.route('/hosts')
 def list_hosts():
     """List all SNMP hosts and their queries."""
@@ -64,7 +91,7 @@ def test_snmp():
     """Test SNMP queries on configured hosts with common APC OIDs."""
     hosts = get_all_hosts()
     
-    # APC PowerNet MIB OIDs focused on PDU monitoring
+    # Common APC PowerNet MIB OIDs
     apc_oids = {
         # PDU System Information
         'PDU Name': '1.3.6.1.4.1.318.1.1.26.1.1.1.0',
@@ -80,7 +107,7 @@ def test_snmp():
         'Total Power': '1.3.6.1.4.1.318.1.1.26.4.1.2.0',
         'Total Apparent Power': '1.3.6.1.4.1.318.1.1.26.4.1.3.0',
         
-        # Input Phase Monitoring (3-phase PDUs)
+        # Input Phase Monitoring (3-phase)
         'Phase 1 Voltage': '1.3.6.1.4.1.318.1.1.26.6.2.1.1.1',
         'Phase 1 Current': '1.3.6.1.4.1.318.1.1.26.6.2.1.2.1',
         'Phase 1 Power': '1.3.6.1.4.1.318.1.1.26.6.2.1.3.1',

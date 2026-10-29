@@ -1,0 +1,78 @@
+{% extends "base.html" %}
+
+{% block title %}Add Device{% endblock %}
+
+{% block content %}
+<h1>Add Device to Rack</h1>
+
+{% with messages = get_flashed_messages(with_categories=true) %}
+  {% if messages %}
+    <div class="messages">
+      {% for category, message in messages %}
+        <div class="message {{ category }}">{{ message }}</div>
+      {% endfor %}
+    </div>
+  {% endif %}
+{% endwith %}
+
+<form method="POST" action="{{ url_for('main.add_device') }}" class="form device-form" enctype="multipart/form-data">
+  <div class="form-group">
+    <label for="name">Device Name*</label>
+    <input type="text" id="name" name="name" required placeholder="e.g., Cisco Switch 2960">
+  </div>
+  
+  <div class="form-group">
+    <label for="rack_id">Rack*</label>
+    <select id="rack_id" name="rack_id" required>
+      <option value="">-- Select a rack --</option>
+      {% for rack in valid_racks %}
+      <option value="{{ rack }}">{{ rack }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  
+  <div class="form-group">
+    <label for="rack_u">Starting U Position* (1-42, bottom-up)</label>
+    <input type="number" id="rack_u" name="rack_u" required min="1" max="42" placeholder="1">
+    <small class="hint">U1 is at the bottom, U42 at the top</small>
+  </div>
+  
+  <div class="form-group">
+    <label for="rack_u_height">Height in U* (1-42)</label>
+    <input type="number" id="rack_u_height" name="rack_u_height" required min="1" max="42" value="1" placeholder="1">
+  </div>
+  
+  <div class="form-group">
+    <label for="image_url">Image URL (optional)</label>
+    <input type="url" id="image_url" name="image_url" placeholder="https://example.com/device.jpg">
+    <small class="hint">Enter a URL to an image of the device</small>
+  </div>
+  
+  <div class="form-group">
+    <label for="description">Description (optional)</label>
+    <textarea id="description" name="description" rows="3" placeholder="Device specifications, serial number, etc."></textarea>
+  </div>
+  
+  <div class="form-actions">
+    <button type="submit" class="button">Add Device</button>
+    <a href="{{ url_for('main.index') }}" class="button secondary">Cancel</a>
+  </div>
+</form>
+
+<div class="rack-visual-preview">
+  <h3>Rack Layout Preview</h3>
+  <p>Devices will appear in their respective racks after being added.</p>
+  <div class="preview-racks">
+    {% for rack in valid_racks %}
+    <div class="preview-rack">
+      <div class="preview-rack-label">{{ rack }}</div>
+      <div class="preview-units">
+        {% for u in range(42, 0, -1) %}
+        <div class="preview-unit">{{ u }}</div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

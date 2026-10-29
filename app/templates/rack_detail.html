@@ -22,9 +22,22 @@
                 <div class="rack-side full left"></div>
                 <div class="rack-units-full">
                     {% for u in range(42, 0, -1) %}
-                    <div class="rack-unit-full">
+                    <div class="rack-unit-full" 
+                         {% for device in devices %}
+                            {% if u >= device.rack_u and u <= device.rack_u + device.rack_u_height - 1 %}
+                                data-device="{{ device.id }}"
+                                data-device-name="{{ device.name }}"
+                                data-device-start="{{ device.rack_u }}"
+                                data-device-end="{{ device.rack_u + device.rack_u_height - 1 }}"
+                                {% if loop.index0 == 0 %}style="grid-row: span {{ device.rack_u_height }}; background: linear-gradient(135deg, #28a745 0%, #20c997 100%);"{% endif %}
+                            {% endif %}
+                         {% endfor %}>
                         <span class="unit-label">U{{ u }}</span>
-                        <span class="unit-status"></span>
+                        {% for device in devices %}
+                            {% if u == device.rack_u %}
+                                <span class="device-overlay">{{ device.name }} ({{ device.u_range }})</span>
+                            {% endif %}
+                        {% endfor %}
                     </div>
                     {% endfor %}
                 </div>
@@ -50,6 +63,32 @@
             <div class="rack-base-full"></div>
         </div>
     </div>
+    
+    {% if devices %}
+    <div class="device-list">
+        <h2>Devices in {{ rack_name }}</h2>
+        <table class="device-table">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Position</th>
+                    <th>Height</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for device in devices %}
+                <tr>
+                    <td>{{ device.name }}</td>
+                    <td>{{ device.u_range }}</td>
+                    <td>{{ device.rack_u_height }}U</td>
+                    <td>{{ device.description or '-' }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
     
     <div class="rack-info-panel">
         <h2>Rack Information</h2>
@@ -78,7 +117,20 @@
                 <th>Cooling:</th>
                 <td>Front-to-back airflow</td>
             </tr>
+            <tr>
+                <th>Devices:</th>
+                <td>{{ devices|length }} installed</td>
+            </tr>
+            <tr>
+                <th>Space Used:</th>
+                <td>{% set total_u = 0 %}
+                    {% for device in devices %}
+                        {% set total_u = total_u + device.rack_u_height %}
+                    {% endfor %}
+                    {{ total_u }}U / 42U</td>
+            </tr>
         </table>
+        <a href="{{ url_for('main.add_device_route') }}" class="button" style="margin-top: 1rem; display: inline-block;">Add Device to This Rack</a>
     </div>
 </div>
 

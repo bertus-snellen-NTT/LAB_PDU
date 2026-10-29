@@ -15,6 +15,7 @@ from pysnmp.hlapi.v3arch import (
 from pysnmp.hlapi.v3arch.asyncio import UdpTransportTarget, get_cmd as getCmd, SnmpEngine
 from pysnmp.proto.rfc1905 import NoSuchInstance
 from app.models import db
+from app.models.device import Device
 from app.models.snmp_query import SnmpQuery
 from app.models.host import SnmpHost
 

@@ -875,3 +875,117 @@ footer {
     border-color: #0078d7;
     box-shadow: 0 4px 12px rgba(0,120,215,0.3);
 }
+
+/* Device Form */
+.device-form {
+    max-width: 600px;
+}
+
+.device-form .form-group {
+    margin-bottom: 1.25rem;
+}
+
+.preview-racks {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.preview-rack {
+    width: 80px;
+    background: #f8f9fa;
+    border: 1px solid #dee2e6;
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+.preview-rack-label {
+    font-weight: bold;
+    font-size: 0.75rem;
+    text-align: center;
+    margin-bottom: 0.25rem;
+    color: #333;
+}
+
+.preview-units {
+    display: flex;
+    flex-direction: column;
+    gap: 1px;
+}
+
+.preview-unit {
+    height: 12px;
+    background: #6c757d;
+    border-radius: 1px;
+    font-size: 0.5rem;
+    color: white;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Device Table */
+.device-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 1rem;
+}
+
+.device-table th,
+.device-table td {
+    padding: 0.75rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+.device-table th {
+    background: #f8f9fa;
+    font-weight: bold;
+}
+
+.device-table tr:hover {
+    background: #f8f9fa;
+}
+
+.device-list {
+    margin-top: 2rem;
+    background: white;
+    padding: 1.5rem;
+    border-radius: 8px;
+    border: 1px solid #dee2e6;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+}
+
+.device-list h2 {
+    margin-top: 0;
+    color: #333;
+    border-bottom: 2px solid #0078d7;
+    padding-bottom: 0.5rem;
+}
+
+/* Device Overlay on Rack */
+.device-overlay {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: rgba(0, 0, 0, 0.7);
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 4px;
+    font-size: 0.65rem;
+    font-weight: bold;
+    white-space: nowrap;
+    z-index: 20;
+    pointer-events: none;
+}
+
+.rack-unit-full[data-device] {
+    position: relative;
+}
+
+.rack-unit-full[data-device]:first-child {
+    grid-row: span var(--device-height, 1);
+}
