@@ -17,6 +17,20 @@ from app.models import db
 from app.models.snmp_query import SnmpQuery
 from app.models.host import SnmpHost
 
+# Try to import AES protocols (optional, may not be available)
+try:
+    from pysnmp.hlapi.v3arch import (
+        usmAesCfb128Protocol,
+        usmAesCfb192Protocol,
+        usmAesCfb256Protocol
+    )
+    HAS_AES = True
+except ImportError:
+    HAS_AES = False
+    usmAesCfb128Protocol = None
+    usmAesCfb192Protocol = None
+    usmAesCfb256Protocol = None
+
 
 def get_snmpv3_engine():
     """Create and return an SNMP v3 engine with settings from environment."""
@@ -36,8 +50,22 @@ def get_snmpv3_engine():
         'usmNoPrivProtocol': usmNoPrivProtocol,
     }
     
+    # Add AES protocols if available
+    if HAS_AES:
+        priv_protocol_map.update({
+            'usmAesCfb128Protocol': usmAesCfb128Protocol,
+            'usmAesCfb192Protocol': usmAesCfb192Protocol,
+            'usmAesCfb256Protocol': usmAesCfb256Protocol,
+        })
+    
     auth_protocol = auth_protocol_map.get(snmp_auth_protocol, usmHMACSHAAuthProtocol)
-    priv_protocol = priv_protocol_map.get(snmp_priv_protocol, usmDESPrivProtocol)
+    priv_protocol = priv_protocol_map.get(snmp_priv_protocol)
+    
+    # Fall back to DES if no privacy protocol specified or if AES not available
+    if priv_protocol is None:
+        priv_protocol = usmDESPrivProtocol
+        if snmp_priv_protocol and snmp_priv_protocol not in priv_protocol_map:
+            raise ValueError(f"Privacy protocol '{snmp_priv_protocol}' is not available. Available: {list(priv_protocol_map.keys())}")
     
     return UsmUserData(
         userName=snmp_user,

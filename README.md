@@ -89,6 +89,10 @@ The following environment variables are supported:
 | `SNMP_AUTH_PROTOCOL` | SNMP v3 auth protocol | usmHMACSHAAuthProtocol |
 | `SNMP_PRIV_PROTOCOL` | SNMP v3 privacy protocol | usmDESPrivProtocol |
 
+**Available SNMP v3 protocols:**
+- Auth: `usmHMACSHAAuthProtocol`, `usmNoAuthProtocol`
+- Privacy: `usmDESPrivProtocol`, `usmNoPrivProtocol`, `usmAesCfb128Protocol` (if AES support is compiled in), `usmAesCfb192Protocol`, `usmAesCfb256Protocol`
+
 ## Adding Sensitive Data
 
 **Important:** Never commit sensitive data to Git.
