@@ -103,6 +103,7 @@ def test_snmp():
         host_id = request.form.get('host_id')
         oid = request.form.get('oid')
         save = request.form.get('save') == 'on'
+        debug = request.form.get('debug') == 'on'
         
         if not host_id or not oid:
             flash('Host and OID are required', 'error')
@@ -120,7 +121,9 @@ def test_snmp():
             return redirect(url_for('main.test_snmp'))
         
         try:
-            result = snmpv3_get(selected_host.host, oid, selected_host.port, save=save)
+            result = snmpv3_get(selected_host.host, oid, selected_host.port, save=save, debug=debug)
+            if debug:
+                flash(f'Debug: Raw result = "{result}"', 'info')
             flash(f'Query successful: {oid} = {result}', 'success')
             return redirect(url_for('main.show_host_queries', host=selected_host.host))
         except Exception as e:

@@ -76,7 +76,7 @@ def get_snmpv3_engine():
     )
 
 
-def snmpv3_get(host: str, oid: str, port: int = 161, save: bool = False) -> str:
+def snmpv3_get(host: str, oid: str, port: int = 161, save: bool = False, debug: bool = False) -> str:
     """
     Execute an SNMP v3 GET query.
     
@@ -85,6 +85,7 @@ def snmpv3_get(host: str, oid: str, port: int = 161, save: bool = False) -> str:
         oid: Object ID to query
         port: SNMP port (default: 161)
         save: Whether to save the query result to database (default: False)
+        debug: Whether to print debug information (default: False)
     
     Returns:
         The value of the queried OID
@@ -116,6 +117,12 @@ def snmpv3_get(host: str, oid: str, port: int = 161, save: bool = False) -> str:
     result = ""
     for var_bind in var_binds:
         result = str(var_bind[1])
+        if debug:
+            print(f"DEBUG: var_bind = {var_bind}")
+            print(f"DEBUG: var_bind[0] = {var_bind[0]}")
+            print(f"DEBUG: var_bind[1] = {var_bind[1]}")
+            print(f"DEBUG: result type = {type(var_bind[1])}")
+            print(f"DEBUG: result repr = {repr(var_bind[1])}")
     
     if save:
         # Find or create the host
