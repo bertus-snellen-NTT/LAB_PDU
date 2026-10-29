@@ -3,6 +3,8 @@ SNMP v3 service for executing SNMP queries.
 """
 import os
 from pysnmp.hlapi import *
+from app.models import db
+from app.models.snmp_query import SnmpQuery
 
 
 def get_snmpv3_engine():
@@ -22,7 +24,7 @@ def get_snmpv3_engine():
     )
 
 
-def snmpv3_get(host: str, oid: str, port: int = 161) -> str:
+def snmpv3_get(host: str, oid: str, port: int = 161, save: bool = False) -> str:
     """
     Execute an SNMP v3 GET query.
     
@@ -30,6 +32,7 @@ def snmpv3_get(host: str, oid: str, port: int = 161) -> str:
         host: SNMP target host
         oid: Object ID to query
         port: SNMP port (default: 161)
+        save: Whether to save the query result to database (default: False)
     
     Returns:
         The value of the queried OID
@@ -56,7 +59,26 @@ def snmpv3_get(host: str, oid: str, port: int = 161) -> str:
     if error_status:
         raise Exception(f"SNMP error: {error_status.prettyPrint()}")
     
+    result = ""
     for var_bind in var_binds:
-        return str(var_bind[1])
+        result = str(var_bind[1])
     
-    return ""
+    if save:
+        query = SnmpQuery(host=host, oid=oid, result=result)
+        db.session.add(query)
+        db.session.commit()
+    
+    return result
+
+
+def get_saved_queries(limit: int = 100):
+    """
+    Get saved SNMP queries from database.
+    
+    Args:
+        limit: Maximum number of queries to return (default: 100)
+    
+    Returns:
+        List of SnmpQuery objects
+    """
+    return SnmpQuery.query.order_by(SnmpQuery.timestamp.desc()).limit(limit).all()
