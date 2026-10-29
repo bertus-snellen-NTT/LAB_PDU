@@ -48,23 +48,96 @@
   </div>
 </form>
 
-<h2>APC PowerNet MIB OIDs</h2>
-<table class="oid-table">
-  <thead>
-    <tr>
-      <th>Name</th>
-      <th>OID</th>
-      <th>Description</th>
-    </tr>
-  </thead>
-  <tbody>
-    {% for name, oid in apc_oids.items() %}
-    <tr>
-      <td><strong>{{ name }}</strong></td>
-      <td><code>{{ oid }}</code></td>
-      <td>{{ name }}</td>
-    </tr>
-    {% endfor %}
-  </tbody>
-</table>
+<h2>APC PowerNet MIB OIDs for PDU Monitoring</h2>
+<div class="oid-categories">
+  <details class="oid-category">
+    <summary><strong>PDU System Information</strong></summary>
+    <table class="oid-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>OID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for name, oid in apc_oids.items() %}
+          {% if 'PDU' in name or 'Firmware' in name or 'Serial' in name or 'Location' in name %}
+        <tr>
+          <td>{{ name }}</td>
+          <td><code>{{ oid }}</code></td>
+        </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </details>
+  
+  <details class="oid-category">
+    <summary><strong>Overall Status & Power</strong></summary>
+    <table class="oid-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>OID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for name, oid in apc_oids.items() %}
+          {% if 'Status' in name or 'Current' in name or 'Power' in name or 'Apparent' in name %}
+            {% if 'Phase' not in name and 'Outlet' not in name %}
+        <tr>
+          <td>{{ name }}</td>
+          <td><code>{{ oid }}</code></td>
+        </tr>
+            {% endif %}
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </details>
+  
+  <details class="oid-category">
+    <summary><strong>Input Phase Monitoring (3-phase)</strong></summary>
+    <table class="oid-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>OID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for name, oid in apc_oids.items() %}
+          {% if 'Phase' in name %}
+        <tr>
+          <td>{{ name }}</td>
+          <td><code>{{ oid }}</code></td>
+        </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </details>
+  
+  <details class="oid-category">
+    <summary><strong>Outlet Monitoring</strong></summary>
+    <table class="oid-table">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>OID</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for name, oid in apc_oids.items() %}
+          {% if 'Outlet' in name %}
+        <tr>
+          <td>{{ name }}</td>
+          <td><code>{{ oid }}</code></td>
+        </tr>
+          {% endif %}
+        {% endfor %}
+      </tbody>
+    </table>
+  </details>
+</div>
 {% endblock %}

@@ -58,27 +58,42 @@ def test_snmp():
     """Test SNMP queries on configured hosts with common APC OIDs."""
     hosts = get_all_hosts()
     
-    # Common APC PowerNet MIB OIDs
+    # APC PowerNet MIB OIDs focused on PDU monitoring
     apc_oids = {
-        'System Description': '1.3.6.1.4.1.318.1.1.1.1.1.1.0',
-        'System Name': '1.3.6.1.4.1.318.1.1.1.1.2.1.0',
-        'System Contact': '1.3.6.1.4.1.318.1.1.1.1.3.1.0',
-        'System Location': '1.3.6.1.4.1.318.1.1.1.1.4.1.0',
-        'System Uptime': '1.3.6.1.2.1.1.3.0',
-        'Input Voltage': '1.3.6.1.4.1.318.1.1.8.2.3.1.0',
-        'Input Frequency': '1.3.6.1.4.1.318.1.1.8.2.4.1.0',
-        'Input Current': '1.3.6.1.4.1.318.1.1.8.2.5.1.0',
-        'Battery Status': '1.3.6.1.4.1.318.1.1.1.2.1.1.0',
-        'Battery Temperature': '1.3.6.1.4.1.318.1.1.1.2.2.1.0',
-        'Output Load': '1.3.6.1.4.1.318.1.1.4.2.2.1.0',
-        'Output Voltage': '1.3.6.1.4.1.318.1.1.4.2.3.1.0',
-        'Output Frequency': '1.3.6.1.4.1.318.1.1.4.2.4.1.0',
-        'Output Current': '1.3.6.1.4.1.318.1.1.4.2.5.1.0',
-        'Alarm Status': '1.3.6.1.4.1.318.1.1.1.1.5.1.0',
-        'Firmware Version': '1.3.6.1.4.1.318.1.1.1.1.6.1.0',
-        'Model Number': '1.3.6.1.4.1.318.1.1.1.1.7.1.0',
-        'Serial Number': '1.3.6.1.4.1.318.1.1.1.1.8.1.0',
-        'Manufacturer': '1.3.6.1.4.1.318.1.1.1.1.9.1.0',
+        # PDU System Information
+        'PDU Name': '1.3.6.1.4.1.318.1.1.26.1.1.1.0',
+        'PDU Model': '1.3.6.1.4.1.318.1.1.26.1.1.2.0',
+        'PDU Serial Number': '1.3.6.1.4.1.318.1.1.26.1.1.3.0',
+        'PDU Firmware': '1.3.6.1.4.1.318.1.1.26.1.1.4.0',
+        'PDU Location': '1.3.6.1.4.1.318.1.1.26.1.1.5.0',
+        
+        # Overall PDU Status
+        'Overall Status': '1.3.6.1.4.1.318.1.1.26.2.1.0',
+        'Overall Alarm Status': '1.3.6.1.4.1.318.1.1.26.2.2.0',
+        'Total Current': '1.3.6.1.4.1.318.1.1.26.4.1.1.0',
+        'Total Power': '1.3.6.1.4.1.318.1.1.26.4.1.2.0',
+        'Total Apparent Power': '1.3.6.1.4.1.318.1.1.26.4.1.3.0',
+        
+        # Input Phase Monitoring (3-phase PDUs)
+        'Phase 1 Voltage': '1.3.6.1.4.1.318.1.1.26.6.2.1.1.1',
+        'Phase 1 Current': '1.3.6.1.4.1.318.1.1.26.6.2.1.2.1',
+        'Phase 1 Power': '1.3.6.1.4.1.318.1.1.26.6.2.1.3.1',
+        'Phase 2 Voltage': '1.3.6.1.4.1.318.1.1.26.6.2.1.1.2',
+        'Phase 2 Current': '1.3.6.1.4.1.318.1.1.26.6.2.1.2.2',
+        'Phase 2 Power': '1.3.6.1.4.1.318.1.1.26.6.2.1.3.2',
+        'Phase 3 Voltage': '1.3.6.1.4.1.318.1.1.26.6.2.1.1.3',
+        'Phase 3 Current': '1.3.6.1.4.1.318.1.1.26.6.2.1.2.3',
+        'Phase 3 Power': '1.3.6.1.4.1.318.1.1.26.6.2.1.3.3',
+        
+        # Outlet Monitoring (first 8 outlets as examples)
+        'Outlet 1 Name': '1.3.6.1.4.1.318.1.1.26.6.3.2.1.2.1',
+        'Outlet 1 Status': '1.3.6.1.4.1.318.1.1.26.6.3.2.1.5.1',
+        'Outlet 1 Current': '1.3.6.1.4.1.318.1.1.26.6.3.2.1.6.1',
+        'Outlet 1 Power': '1.3.6.1.4.1.318.1.1.26.6.3.2.1.8.1',
+        'Outlet 2 Name': '1.3.6.1.4.1.318.1.1.26.6.3.2.1.2.2',
+        'Outlet 2 Status': '1.3.6.1.4.1.318.1.1.26.6.3.2.1.5.2',
+        'Outlet 2 Current': '1.3.6.1.4.1.318.1.1.26.6.3.2.1.6.2',
+        'Outlet 2 Power': '1.3.6.1.4.1.318.1.1.26.6.3.2.1.8.2',
     }
     
     if request.method == 'POST':
