@@ -5,6 +5,7 @@ import os
 from pysnmp.hlapi import *
 from app.models import db
 from app.models.snmp_query import SnmpQuery
+from app.models.host import SnmpHost
 
 
 def get_snmpv3_engine():
