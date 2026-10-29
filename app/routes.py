@@ -122,9 +122,14 @@ def test_snmp():
         
         try:
             result = snmpv3_get(selected_host.host, oid, selected_host.port, save=save, debug=debug)
-            if debug:
-                flash(f'Debug: Raw result = "{result}"', 'info')
-            flash(f'Query successful: {oid} = {result}', 'success')
+            if result == "[NO_SUCH_INSTANCE]":
+                flash(f'Query returned no data: OID {oid} does not exist on {selected_host.host} (No Such Instance)', 'warning')
+            elif result == "":
+                flash(f'Query returned no data: OID {oid} on {selected_host.host} returned empty result', 'warning')
+            else:
+                if debug:
+                    flash(f'Debug: Raw result = "{result}"', 'info')
+                flash(f'Query successful: {oid} = {result}', 'success')
             return redirect(url_for('main.show_host_queries', host=selected_host.host))
         except Exception as e:
             flash(f'Query failed: {str(e)}', 'error')

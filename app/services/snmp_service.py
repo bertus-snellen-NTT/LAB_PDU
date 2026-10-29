@@ -13,6 +13,7 @@ from pysnmp.hlapi.v3arch import (
     ObjectIdentity
 )
 from pysnmp.hlapi.v3arch.asyncio import UdpTransportTarget, get_cmd as getCmd, SnmpEngine
+from pysnmp.proto.rfc1905 import NoSuchInstance
 from app.models import db
 from app.models.snmp_query import SnmpQuery
 from app.models.host import SnmpHost
@@ -88,7 +89,7 @@ def snmpv3_get(host: str, oid: str, port: int = 161, save: bool = False, debug: 
         debug: Whether to print debug information (default: False)
     
     Returns:
-        The value of the queried OID
+        The value of the queried OID, or a special string for error conditions
     
     Raises:
         Exception: If SNMP query fails
@@ -114,15 +115,24 @@ def snmpv3_get(host: str, oid: str, port: int = 161, save: bool = False, debug: 
     if error_status:
         raise Exception(f"SNMP error: {error_status.prettyPrint()}")
     
-    result = ""
+    # Check for NoSuchInstance in var_binds
     for var_bind in var_binds:
-        result = str(var_bind[1])
         if debug:
             print(f"DEBUG: var_bind = {var_bind}")
             print(f"DEBUG: var_bind[0] = {var_bind[0]}")
             print(f"DEBUG: var_bind[1] = {var_bind[1]}")
             print(f"DEBUG: result type = {type(var_bind[1])}")
             print(f"DEBUG: result repr = {repr(var_bind[1])}")
+        
+        # Check if this is a NoSuchInstance response
+        if isinstance(var_bind[1], NoSuchInstance):
+            if debug:
+                print(f"DEBUG: NoSuchInstance detected for OID {oid}")
+            return "[NO_SUCH_INSTANCE]"
+    
+    result = ""
+    for var_bind in var_binds:
+        result = str(var_bind[1])
     
     if save:
         # Find or create the host
