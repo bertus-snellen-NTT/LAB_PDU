@@ -16,26 +16,28 @@
         <div class="rack-row">
             <div class="rack-row-label">Row 1</div>
             {% for i in range(1, 7) %}
-            <div class="rack" onclick="showRackDetail('R1C{{ i }}')" {% if i <= 3 %}style="cursor: pointer;" title="Click to view R1C{{ i }} front"{% endif %}>
-                <div class="rack-top">
-                    <span class="rack-label">R1C{{ i }}</span>
-                    {% if i <= 3 %}
-                    <span class="rack-click-hint">&#9679;</span>
-                    {% endif %}
-                </div>
-                <div class="rack-front" style="display: none;">
-                    <div class="rack-frame">
-                        <div class="rack-side left"></div>
-                        <div class="rack-units">
-                            {% for u in range(1, 43) %}
-                            <div class="rack-unit"><span>U{{ u }}</span></div>
-                            {% endfor %}
-                        </div>
-                        <div class="rack-side right"></div>
+            <a href="{{ url_for('main.rack_detail', rack_name='R1C' + i|string) }}" class="rack-link">
+                <div class="rack" {% if i <= 3 %}class="clickable"{% endif %}>
+                    <div class="rack-top">
+                        <span class="rack-label">R1C{{ i }}</span>
+                        {% if i <= 3 %}
+                        <span class="rack-click-hint">&#9679;</span>
+                        {% endif %}
                     </div>
-                    <div class="rack-base"></div>
+                    <div class="rack-front" style="display: none;">
+                        <div class="rack-frame">
+                            <div class="rack-side left"></div>
+                            <div class="rack-units">
+                                {% for u in range(42, 0, -1) %}
+                                <div class="rack-unit"></div>
+                                {% endfor %}
+                            </div>
+                            <div class="rack-side right"></div>
+                        </div>
+                        <div class="rack-base"></div>
+                    </div>
                 </div>
-            </div>
+            </a>
             {% endfor %}
         </div>
         
@@ -43,36 +45,29 @@
         <div class="rack-row">
             <div class="rack-row-label">Row 2</div>
             {% for i in range(1, 6) %}
-            <div class="rack" onclick="showRackDetail('R2C{{ i }}')" {% if i <= 3 %}style="cursor: pointer;" title="Click to view R2C{{ i }} front"{% endif %}>
-                <div class="rack-top">
-                    <span class="rack-label">R2C{{ i }}</span>
-                    {% if i <= 3 %}
-                    <span class="rack-click-hint">&#9679;</span>
-                    {% endif %}
-                </div>
-                <div class="rack-front" style="display: none;">
-                    <div class="rack-frame">
-                        <div class="rack-side left"></div>
-                        <div class="rack-units">
-                            {% for u in range(1, 43) %}
-                            <div class="rack-unit"><span>U{{ u }}</span></div>
-                            {% endfor %}
-                        </div>
-                        <div class="rack-side right"></div>
+            <a href="{{ url_for('main.rack_detail', rack_name='R2C' + i|string) }}" class="rack-link">
+                <div class="rack" {% if i <= 3 %}class="clickable"{% endif %}>
+                    <div class="rack-top">
+                        <span class="rack-label">R2C{{ i }}</span>
+                        {% if i <= 3 %}
+                        <span class="rack-click-hint">&#9679;</span>
+                        {% endif %}
                     </div>
-                    <div class="rack-base"></div>
+                    <div class="rack-front" style="display: none;">
+                        <div class="rack-frame">
+                            <div class="rack-side left"></div>
+                            <div class="rack-units">
+                                {% for u in range(42, 0, -1) %}
+                                <div class="rack-unit"></div>
+                                {% endfor %}
+                            </div>
+                            <div class="rack-side right"></div>
+                        </div>
+                        <div class="rack-base"></div>
+                    </div>
                 </div>
-            </div>
+            </a>
             {% endfor %}
-        </div>
-    </div>
-    
-    <!-- Rack Detail Modal -->
-    <div id="rackDetailModal" class="modal" style="display: none;">
-        <div class="modal-content">
-            <span class="close" onclick="closeRackDetail()">&times;</span>
-            <h2 id="rackDetailTitle">Rack Detail</h2>
-            <div id="rackDetailContent" class="rack-detail-content"></div>
         </div>
     </div>
 </div>
@@ -94,49 +89,6 @@ function setView(view) {
             rack.querySelector('.rack-top').style.display = 'none';
             rack.querySelector('.rack-front').style.display = 'block';
         });
-    }
-}
-
-function showRackDetail(rackName) {
-    // Only first 3 racks in each row are clickable
-    const clickableRacks = ['R1C1', 'R1C2', 'R1C3', 'R2C1', 'R2C2', 'R2C3'];
-    if (!clickableRacks.includes(rackName)) return;
-    
-    const modal = document.getElementById('rackDetailModal');
-    const title = document.getElementById('rackDetailTitle');
-    const content = document.getElementById('rackDetailContent');
-    
-    title.textContent = `${rackName} - Front View`;
-    content.innerHTML = `
-        <div class="rack-detail">
-            <div class="rack-frame-detail">
-                <div class="rack-side-detail left"></div>
-                <div class="rack-units-detail">
-                    ${Array.from({length: 42}, (_, i) => `<div class="rack-unit-detail"><span>U${i+1}</span></div>`).join('')}
-                </div>
-                <div class="rack-side-detail right"></div>
-            </div>
-            <div class="rack-base-detail"></div>
-            <div class="rack-info">
-                <p><strong>${rackName}</strong></p>
-                <p>42U Standard 19" Rack</p>
-                <p>Status: Operational</p>
-            </div>
-        </div>
-    `;
-    
-    modal.style.display = 'block';
-}
-
-function closeRackDetail() {
-    document.getElementById('rackDetailModal').style.display = 'none';
-}
-
-// Close modal when clicking outside
-window.onclick = function(event) {
-    const modal = document.getElementById('rackDetailModal');
-    if (event.target == modal) {
-        modal.style.display = 'none';
     }
 }
 </script>

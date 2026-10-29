@@ -1,0 +1,96 @@
+{% extends "base.html" %}
+
+{% block title %}Rack {{ rack_name }} - Lab PDU Dashboard{% endblock %}
+
+{% block content %}
+<div class="rack-detail-page">
+    <div class="breadcrumb">
+        <a href="{{ url_for('main.index') }}">&#9664; Back to Datacenter</a>
+    </div>
+    
+    <h1>Rack {{ rack_name }}</h1>
+    
+    <div class="view-selector">
+        <button class="view-btn active" onclick="setView('front')">Front View</button>
+        <button class="view-btn" onclick="setView('rear')">Rear View</button>
+    </div>
+    
+    <div class="rack-container">
+        <!-- Front View -->
+        <div id="front-view" class="rack-view">
+            <div class="rack-frame-full">
+                <div class="rack-side full left"></div>
+                <div class="rack-units-full">
+                    {% for u in range(42, 0, -1) %}
+                    <div class="rack-unit-full">
+                        <span class="unit-label">U{{ u }}</span>
+                        <span class="unit-status"></span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="rack-side full right"></div>
+            </div>
+            <div class="rack-base-full"></div>
+        </div>
+        
+        <!-- Rear View -->
+        <div id="rear-view" class="rack-view" style="display: none;">
+            <div class="rack-frame-full">
+                <div class="rack-side full left"></div>
+                <div class="rack-units-full">
+                    {% for u in range(42, 0, -1) %}
+                    <div class="rack-unit-full rear">
+                        <span class="unit-label">U{{ u }}</span>
+                        <span class="unit-ports"></span>
+                    </div>
+                    {% endfor %}
+                </div>
+                <div class="rack-side full right"></div>
+            </div>
+            <div class="rack-base-full"></div>
+        </div>
+    </div>
+    
+    <div class="rack-info-panel">
+        <h2>Rack Information</h2>
+        <table class="rack-info-table">
+            <tr>
+                <th>Name:</th>
+                <td>{{ rack_name }}</td>
+            </tr>
+            <tr>
+                <th>Type:</th>
+                <td>19" Standard Server Rack</td>
+            </tr>
+            <tr>
+                <th>Height:</th>
+                <td>42U</td>
+            </tr>
+            <tr>
+                <th>Status:</th>
+                <td><span class="status-operational">Operational</span></td>
+            </tr>
+            <tr>
+                <th>Power:</th>
+                <td>Dual 30A circuits</td>
+            </tr>
+            <tr>
+                <th>Cooling:</th>
+                <td>Front-to-back airflow</td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<script>
+function setView(view) {
+    const btns = document.querySelectorAll('.view-btn');
+    btns.forEach(btn => btn.classList.remove('active'));
+    event.target.classList.add('active');
+    
+    document.getElementById('front-view').style.display = 'none';
+    document.getElementById('rear-view').style.display = 'none';
+    document.getElementById(view + '-view').style.display = 'block';
+}
+</script>
+{% endblock %}

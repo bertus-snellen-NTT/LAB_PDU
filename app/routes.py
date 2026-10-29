@@ -17,6 +17,11 @@ def about():
     return render_template('about.html', info=info)
 
 
+n@main.route('/rack/<rack_name>')
+
+def rack_detail(rack_name):
+    """Show detailed view of a specific rack."""
+    return render_template('rack_detail.html', rack_name=rack_name)
 @main.route('/hosts')
 def list_hosts():
     """List all SNMP hosts and their queries."""
