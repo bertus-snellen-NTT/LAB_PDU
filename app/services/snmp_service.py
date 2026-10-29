@@ -9,10 +9,10 @@ from pysnmp.hlapi.v3arch import (
     usmNoAuthProtocol,
     usmNoPrivProtocol
 )
+from pysnmp.hlapi.v3arch.asyncio import UdpTransportTarget
 from pysnmp.hlapi.asyncio import (
     SnmpEngine,
     CommunityData,
-    UdpTransportTarget,
     ContextData,
     ObjectType,
     ObjectIdentity,
@@ -69,14 +69,17 @@ def snmpv3_get(host: str, oid: str, port: int = 161, save: bool = False) -> str:
     Raises:
         Exception: If SNMP query fails
     """
-    user_data = get_snmpv3_engine()
+    import asyncio
     
-    error_indication, error_status, error_index, var_binds = next(
+    user_data = get_snmpv3_engine()
+    transport = asyncio.run(UdpTransportTarget.create((host, port)))
+    
+    error_indication, error_status, error_index, var_binds = asyncio.run(
         getCmd(
             SnmpEngine(),
             CommunityData('public'),  # Not used for v3, but required by API
             user_data,
-            UdpTransportTarget((host, port)),
+            transport,
             ContextData(),
             ObjectType(ObjectIdentity(oid))
         )
