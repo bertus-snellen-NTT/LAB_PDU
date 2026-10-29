@@ -94,6 +94,9 @@ def test_snmp():
         'Outlet 2 Status': '1.3.6.1.4.1.318.1.1.26.6.3.2.1.5.2',
         'Outlet 2 Current': '1.3.6.1.4.1.318.1.1.26.6.3.2.1.6.2',
         'Outlet 2 Power': '1.3.6.1.4.1.318.1.1.26.6.3.2.1.8.2',
+        
+        # Additional outlet OIDs (table-based, instance 5)
+        'Outlet 5 Status': '1.3.6.1.4.1.318.1.1.26.9.2.4.1.5',
     }
     
     if request.method == 'POST':

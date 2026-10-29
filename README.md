@@ -89,6 +89,9 @@ The following environment variables are supported:
 | `SNMP_AUTH_PROTOCOL` | SNMP v3 auth protocol | usmHMACSHAAuthProtocol |
 | `SNMP_PRIV_PROTOCOL` | SNMP v3 privacy protocol | usmDESPrivProtocol |
 
+**APC PDU OID Notes:**
+- OID `1.3.6.1.4.1.318.1.1.26.9.2.4.1.5` = Outlet 5 Status - Part of APC PowerNet MIB's outlet monitoring table. The `9.2.4` is the outlet status table, `1` is the outlet index (outlet 5), and the final `5` represents the status value (on/off, alarm state).
+
 **Available SNMP v3 protocols:**
 - Auth: `usmHMACSHAAuthProtocol`, `usmNoAuthProtocol`
 - Privacy: `usmDESPrivProtocol`, `usmNoPrivProtocol`, `usmAesCfb128Protocol` (if AES support is compiled in), `usmAesCfb192Protocol`, `usmAesCfb256Protocol`
