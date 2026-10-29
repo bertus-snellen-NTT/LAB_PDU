@@ -7,17 +7,12 @@ from pysnmp.hlapi.v3arch import (
     usmHMACSHAAuthProtocol,
     usmAesCfb128Protocol,
     usmNoAuthProtocol,
-    usmNoPrivProtocol
-)
-from pysnmp.hlapi.v3arch.asyncio import UdpTransportTarget
-from pysnmp.hlapi.asyncio import (
-    SnmpEngine,
-    CommunityData,
+    usmNoPrivProtocol,
     ContextData,
     ObjectType,
-    ObjectIdentity,
-    get_cmd as getCmd
+    ObjectIdentity
 )
+from pysnmp.hlapi.v3arch.asyncio import UdpTransportTarget, get_cmd as getCmd, SnmpEngine
 from app.models import db
 from app.models.snmp_query import SnmpQuery
 from app.models.host import SnmpHost
@@ -77,7 +72,6 @@ def snmpv3_get(host: str, oid: str, port: int = 161, save: bool = False) -> str:
     error_indication, error_status, error_index, var_binds = asyncio.run(
         getCmd(
             SnmpEngine(),
-            CommunityData('public'),  # Not used for v3, but required by API
             user_data,
             transport,
             ContextData(),
